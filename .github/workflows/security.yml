@@ -1,8 +1,6 @@
+﻿name: DevSecOps Security Pipeline
 
-@'
-name: DevSecOps Security Pipeline
-
-on:
+'on':
   push:
   pull_request:
 
@@ -22,10 +20,7 @@ jobs:
 
       - name: Secret scan - Gitleaks
         run: |
-          docker run --rm \
-            -v "${{ github.workspace }}:/repo" \
-            zricethezav/gitleaks:latest \
-            detect --source /repo --exit-code 1
+          docker run --rm -v "${{ github.workspace }}:/repo" zricethezav/gitleaks:latest detect --source /repo --exit-code 1
 
       - name: SAST scan - Semgrep
         if: always()
@@ -36,8 +31,4 @@ jobs:
       - name: Dependency scan - Trivy
         if: always()
         run: |
-          docker run --rm \
-            -v "${{ github.workspace }}:/repo" \
-            aquasec/trivy:latest \
-            fs --scanners vuln --exit-code 0 /repo
-'@ | Set-Content -Encoding utf8 .github/workflows/security.yml
+          docker run --rm -v "${{ github.workspace }}:/repo" aquasec/trivy:latest fs --scanners vuln --exit-code 0 /repo
